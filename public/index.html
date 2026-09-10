@@ -45,7 +45,7 @@
     <div class="app-container hidden" id="main-app">
         <header class="app-header">
             <h1><i class="fa-solid fa-shield-halved"></i> Secure Mail Console</h1>
-            <button type="button" id="logout-btn" class="btn-logout" title="Double click to logout">
+            <button type="button" id="logout-btn" class="logout-header-btn" title="Double click to logout">
                 <i class="fa-solid fa-right-from-bracket"></i> Logout (Double Click)
             </button>
         </header>
@@ -63,18 +63,18 @@
                         
                         <div class="form-row">
                             <div class="form-group half">
-                                <label for="sender-name">Sender Name</label>
+                                <label for="sender-name"><i class="fa-solid fa-user"></i> Sender Name</label>
                                 <input type="text" id="sender-name" placeholder="E.g., John Doe" required spellcheck="false">
                             </div>
                             <div class="form-group half">
-                                <label for="dashboard-email">Your Gmail</label>
+                                <label for="dashboard-email"><i class="fa-solid fa-envelope"></i> Your Gmail</label>
                                 <input type="email" id="dashboard-email" placeholder="you@gmail.com" required spellcheck="false" autocomplete="email">
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group half">
-                                <label for="dashboard-password">App Password</label>
+                                <label for="dashboard-password"><i class="fa-solid fa-key"></i> App Password</label>
                                 <div class="password-wrapper">
                                     <input type="password" id="dashboard-password" placeholder="16-char app password" required autocomplete="off">
                                     <button type="button" id="toggle-password" class="icon-button" aria-label="Toggle App Password">
@@ -83,13 +83,13 @@
                                 </div>
                             </div>
                             <div class="form-group half">
-                                <label for="subject">Email Subject</label>
+                                <label for="subject"><i class="fa-solid fa-heading"></i> Email Subject</label>
                                 <input type="text" id="subject" placeholder="Enter subject line..." required>
                             </div>
                         </div>
 
                         <div class="form-group flex-grow">
-                            <label for="message-body">Message Body (Plain Text / HTML)</label>
+                            <label for="message-body"><i class="fa-solid fa-align-left"></i> Message Body (Plain Text / HTML)</label>
                             <textarea id="message-body" placeholder="Write your email here... Spintax supported: {Hi|Hello} {name}" required></textarea>
                         </div>
                         
@@ -148,10 +148,10 @@
                         </div>
 
                         <div class="control-buttons">
-                            <button type="button" id="send-btn" class="btn btn-success btn-lg flex-1">
+                            <button type="button" id="send-btn" class="btn btn-success btn-block flex-1">
                                 <i class="fa-solid fa-paper-plane"></i> Send All
                             </button>
-                            <button type="button" id="stop-btn" class="btn btn-danger btn-lg flex-1 hidden">
+                            <button type="button" id="stop-btn" class="btn btn-danger btn-block flex-1 hidden">
                                 <i class="fa-solid fa-stop"></i> Stop Sending
                             </button>
                         </div>
