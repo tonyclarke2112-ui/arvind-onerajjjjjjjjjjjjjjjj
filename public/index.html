@@ -4,23 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Mail Console</title>
+    <title>Secure Mail Console | Pro Edition</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="dark-theme">
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+
     <!-- Password Gate Overlay -->
     <div id="password-gate" class="password-gate">
-        <div class="gate-card fade-in">
-            <div class="gate-icon">
-                <i class="fa-solid fa-lock"></i>
+        <div class="gate-card glass-panel fade-in">
+            <div class="gate-icon glow-badge">
+                <i class="fa-solid fa-shield-halved"></i>
             </div>
             <h2>Access Protected</h2>
-            <p>Enter the password to continue</p>
+            <p>Enter administrative key to unlock console</p>
             <form id="gate-form" autocomplete="off">
                 <div class="form-group">
                     <div class="password-wrapper">
@@ -31,11 +34,11 @@
                     </div>
                 </div>
                 <div id="gate-error" class="gate-error hidden">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <i class="fa-solid fa-circle-exclamation"></i>
                     <span>Incorrect password</span>
                 </div>
-                <button type="submit" id="gate-submit-btn" class="btn btn-primary btn-block">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i> Enter
+                <button type="submit" id="gate-submit-btn" class="btn btn-cyber btn-block">
+                    <span><i class="fa-solid fa-bolt"></i> Access Console</span>
                 </button>
             </form>
         </div>
@@ -43,31 +46,37 @@
 
     <!-- Main Dashboard Application -->
     <div class="app-container hidden" id="main-app">
-        <header class="app-header">
-            <h1><i class="fa-solid fa-shield-halved"></i> Secure Mail Console</h1>
+        <header class="app-header glass-header">
+            <div class="logo-box">
+                <span class="logo-icon"><i class="fa-solid fa-shield-halved"></i></span>
+                <h1>Secure Mail <span>Console</span></h1>
+            </div>
             <button type="button" id="logout-btn" class="logout-header-btn" title="Double click to logout">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout (Double Click)
+                <i class="fa-solid fa-power-off"></i> Logout <span class="sub-tip">(Double Click)</span>
             </button>
         </header>
 
         <section id="dashboard-section">
             <div class="dashboard-header fade-in">
-                <h2><i class="fa-solid fa-paper-plane"></i> Bulk Email Sender</h2>
+                <h2><i class="fa-solid fa-rocket"></i> Bulk Email Sender </h2>
             </div>
 
             <div class="dashboard-grid">
-                <!-- Composer Card -->
-                <div class="card composer-card fade-in delay-1">
-                    <h3><i class="fa-solid fa-pen-to-square"></i> Compose Message</h3>
+                <!-- Left Column: Composer Card -->
+                <div class="card composer-card glass-card fade-in delay-1">
+                    <div class="card-title-bar">
+                        <h3><i class="fa-solid fa-pen-nib"></i> Compose Message</h3>
+                        <span class="status-dot-active"></span>
+                    </div>
                     <form id="compose-form" onsubmit="return false;">
                         
                         <div class="form-row">
                             <div class="form-group half">
-                                <label for="sender-name"><i class="fa-solid fa-user"></i> Sender Name</label>
+                                <label for="sender-name"><i class="fa-solid fa-id-card"></i> Sender Name</label>
                                 <input type="text" id="sender-name" placeholder="E.g., John Doe" required spellcheck="false">
                             </div>
                             <div class="form-group half">
-                                <label for="dashboard-email"><i class="fa-solid fa-envelope"></i> Your Gmail</label>
+                                <label for="dashboard-email"><i class="fa-solid fa-at"></i> Your Gmail</label>
                                 <input type="email" id="dashboard-email" placeholder="you@gmail.com" required spellcheck="false" autocomplete="email">
                             </div>
                         </div>
@@ -89,23 +98,25 @@
                         </div>
 
                         <div class="form-group flex-grow">
-                            <label for="message-body"><i class="fa-solid fa-align-left"></i> Message Body (Plain Text / HTML)</label>
+                            <label for="message-body"><i class="fa-solid fa-code"></i> Message Body (Plain Text / HTML)</label>
                             <textarea id="message-body" placeholder="Write your email here... Spintax supported: {Hi|Hello} {name}" required></textarea>
                         </div>
                         
-                        <div class="form-group" style="margin-top: 0.5rem; margin-bottom: 0;">
-                            <label><i class="fa-solid fa-shield-cat"></i> Spam Protection</label>
-                            <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light"></div>
+                        <div class="form-group turnstile-container">
+                            <label><i class="fa-solid fa-user-shield"></i> Spam Protection</label>
+                            <div class="cf-turnstile-wrapper">
+                                <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark"></div>
+                            </div>
                         </div>
                     </form>
                 </div>
 
-                <!-- Recipients & Controls -->
+                <!-- Right Column: Recipients & Progress -->
                 <div class="right-column">
-                    <div class="card recipients-card fade-in delay-2">
+                    <div class="card recipients-card glass-card fade-in delay-2">
                         <div class="card-header-flex">
-                            <h3><i class="fa-solid fa-users"></i> Recipients</h3>
-                            <span class="badge" id="detected-count">0 found</span>
+                            <h3><i class="fa-solid fa-users-gear"></i> Recipients</h3>
+                            <span class="badge-neon" id="detected-count">0 found</span>
                         </div>
                         <p class="help-subtext">Paste emails (comma separated, new lines, or Excel copy)</p>
                         <div class="form-group flex-grow" style="margin-bottom: 0;">
@@ -116,30 +127,30 @@
                         </div>
                     </div>
 
-                    <div class="card progress-card fade-in delay-3">
-                        <h3><i class="fa-solid fa-chart-pie"></i> Progress Monitor</h3>
+                    <div class="card progress-card glass-card fade-in delay-3">
+                        <h3><i class="fa-solid fa-chart-line"></i> Progress Monitor</h3>
 
                         <div class="stats-grid">
                             <div class="stat-box neutral">
-                                <span class="stat-label">Total</span>
+                                <span class="stat-label">TOTAL</span>
                                 <span class="stat-value" id="stat-total">0</span>
                             </div>
                             <div class="stat-box success">
-                                <span class="stat-label">Sent</span>
+                                <span class="stat-label">SENT</span>
                                 <span class="stat-value" id="stat-sent">0</span>
                             </div>
                             <div class="stat-box danger">
-                                <span class="stat-label">Failed</span>
+                                <span class="stat-label">FAILED</span>
                                 <span class="stat-value" id="stat-failed">0</span>
                             </div>
                             <div class="stat-box warning">
-                                <span class="stat-label">Remaining</span>
+                                <span class="stat-label">REMAINING</span>
                                 <span class="stat-value" id="stat-remaining">0</span>
                             </div>
                         </div>
 
                         <div class="progress-bar-container">
-                            <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+                            <div class="progress-bar glow-bar" id="progress-bar" style="width: 0%;"></div>
                         </div>
 
                         <div class="status-indicator">
@@ -148,10 +159,10 @@
                         </div>
 
                         <div class="control-buttons">
-                            <button type="button" id="send-btn" class="btn btn-success btn-block flex-1">
+                            <button type="button" id="send-btn" class="btn btn-cyber-success btn-block flex-1">
                                 <i class="fa-solid fa-paper-plane"></i> Send All
                             </button>
-                            <button type="button" id="stop-btn" class="btn btn-danger btn-block flex-1 hidden">
+                            <button type="button" id="stop-btn" class="btn btn-cyber-danger btn-block flex-1 hidden">
                                 <i class="fa-solid fa-stop"></i> Stop Sending
                             </button>
                         </div>
