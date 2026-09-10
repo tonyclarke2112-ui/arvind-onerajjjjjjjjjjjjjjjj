@@ -11,20 +11,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
 
     if (sessionStorage.getItem('authenticated') === 'true') {
-        passwordGate.classList.add('hidden');
-        mainApp.classList.remove('hidden');
+        passwordGate?.classList.add('hidden');
+        mainApp?.classList.remove('hidden');
     } else {
-        passwordGate.classList.remove('hidden');
-        mainApp.classList.add('hidden');
+        passwordGate?.classList.remove('hidden');
+        mainApp?.classList.add('hidden');
     }
 
-    toggleGatePassword.addEventListener('click', () => {
+    toggleGatePassword?.addEventListener('click', () => {
         const type = gatePassword.getAttribute('type') === 'password' ? 'text' : 'password';
         gatePassword.setAttribute('type', type);
         toggleGatePassword.innerHTML = type === 'password' ? '<i class="fa-regular fa-eye"></i>' : '<i class="fa-regular fa-eye-slash"></i>';
     });
 
-    gateForm.addEventListener('submit', async (e) => {
+    gateForm?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const password = gatePassword.value.trim();
         if (!password) return;
@@ -55,7 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 gatePassword.focus();
             }
         } catch (err) {
-            gateError.querySelector('span').textContent = 'Connection error. Try again.';
+            if (gateError.querySelector('span')) {
+                gateError.querySelector('span').textContent = 'Connection error. Try again.';
+            }
             gateError.classList.remove('hidden');
         } finally {
             gateSubmitBtn.disabled = false;
@@ -108,19 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let isSending = false;
     let stopRequested = false;
 
-    togglePasswordBtn.addEventListener('click', () => {
+    togglePasswordBtn?.addEventListener('click', () => {
         const type = dashboardPassword.getAttribute('type') === 'password' ? 'text' : 'password';
         dashboardPassword.setAttribute('type', type);
         togglePasswordBtn.innerHTML = type === 'password' ? '<i class="fa-regular fa-eye"></i>' : '<i class="fa-regular fa-eye-slash"></i>';
     });
 
-    recipientsInput.addEventListener('input', extractEmails);
+    recipientsInput?.addEventListener('input', extractEmails);
 
     function extractEmails() {
         const text = recipientsInput.value;
         if (!text.trim()) {
             extractedEmails = [];
-            detectedCount.textContent = '0 found';
+            if (detectedCount) detectedCount.textContent = '0 found';
             return;
         }
 
@@ -128,13 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const matches = text.match(emailRegex) || [];
         extractedEmails = [...new Set(matches.map(e => e.toLowerCase().trim()))];
 
-        detectedCount.textContent = `${extractedEmails.length} found`;
-        if (extractedEmails.length > 0) {
+        if (detectedCount) detectedCount.textContent = `${extractedEmails.length} found`;
+        if (extractedEmails.length > 0 && emailValidationError) {
             emailValidationError.classList.add('hidden');
         }
     }
 
-    sendBtn.addEventListener('click', async () => {
+    sendBtn?.addEventListener('click', async () => {
         if (isSending) return;
 
         const emailVal = dashboardEmail.value.trim();
@@ -149,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (extractedEmails.length === 0) {
-            emailValidationError.classList.remove('hidden');
+            if (emailValidationError) emailValidationError.classList.remove('hidden');
             alert('Please enter recipient emails.');
             return;
         }
@@ -158,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value || "";
 
         sendBtn.disabled = true;
-        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying SMTP...';
 
         try {
             const verifyRes = await fetch('/api/verify', {
@@ -206,35 +208,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (done) break;
 
                 buffer += decoder.decode(value, { stream: true });
-                const lines = buffer.split('\n\n');
-                buffer = lines.pop();
+                
+                // Fixed SSE Chunk parsing algorithm
+                const lines = buffer.split('\n');
+                buffer = lines.pop(); // Keeping remaining incomplete chunk in buffer
 
                 for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        const dataStr = line.replace('data: ', '').trim();
+                    const trimmedLine = line.trim();
+                    if (trimmedLine.startsWith('data:')) {
+                        const dataStr = trimmedLine.replace(/^data:\s*/, '').trim();
+                        
                         if (dataStr === '[DONE]') break;
 
                         try {
                             const event = JSON.parse(dataStr);
                             if (event.success) {
                                 sentCount++;
-                                updateProgressUI(sentCount, failedCount, recipientsToSend.length, `Sent: ${event.recipient}`);
+                                updateProgressUI(sentCount, failedCount, recipientsToSend.length, `Sent to: ${event.recipient}`);
                             } else {
                                 failedCount++;
                                 updateProgressUI(sentCount, failedCount, recipientsToSend.length, `Failed: ${event.recipient}`);
                             }
-                        } catch (e) { }
+                        } catch (e) {
+                            // Ignored partial chunk parse errors safely
+                        }
                     }
                 }
             }
 
-            isSending = false;
             if (stopRequested) {
-                statusIcon.className = 'fa-solid fa-circle-stop text-danger';
-                statusText.textContent = 'Process stopped by user.';
+                if (statusIcon) statusIcon.className = 'fa-solid fa-circle-stop text-danger';
+                if (statusText) statusText.textContent = 'Process stopped by user.';
             } else {
-                statusIcon.className = 'fa-solid fa-circle-check text-success';
-                statusText.textContent = 'Completed successfully!';
+                if (statusIcon) statusIcon.className = 'fa-solid fa-circle-check text-success';
+                if (statusText) statusText.textContent = 'Completed successfully!';
             }
 
         } catch (err) {
@@ -246,10 +253,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    stopBtn.addEventListener('click', async () => {
+    stopBtn?.addEventListener('click', async () => {
         stopRequested = true;
-        statusIcon.className = 'fa-solid fa-spinner fa-spin text-warning';
-        statusText.textContent = 'Stopping send process...';
+        if (statusIcon) statusIcon.className = 'fa-solid fa-spinner fa-spin text-warning';
+        if (statusText) statusText.textContent = 'Stopping send process...';
         stopBtn.disabled = true;
 
         try {
@@ -263,30 +270,34 @@ document.addEventListener('DOMContentLoaded', () => {
         isSending = true;
         stopRequested = false;
 
-        statTotal.textContent = total;
-        statSent.textContent = '0';
-        statFailed.textContent = '0';
-        statRemaining.textContent = total;
-        progressBar.style.width = '0%';
+        if (statTotal) statTotal.textContent = total;
+        if (statSent) statSent.textContent = '0';
+        if (statFailed) statFailed.textContent = '0';
+        if (statRemaining) statRemaining.textContent = total;
+        if (progressBar) progressBar.style.width = '0%';
 
-        statusIcon.className = 'fa-solid fa-circle-notch fa-spin text-primary';
-        statusText.textContent = 'Sending emails...';
+        if (statusIcon) statusIcon.className = 'fa-solid fa-circle-notch fa-spin text-primary';
+        if (statusText) statusText.textContent = 'Sending emails...';
 
-        sendBtn.disabled = true;
-        sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
-        stopBtn.classList.remove('hidden');
-        stopBtn.disabled = false;
+        if (sendBtn) {
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+        }
+        if (stopBtn) {
+            stopBtn.classList.remove('hidden');
+            stopBtn.disabled = false;
+        }
     }
 
     function updateProgressUI(sentCount, failedCount, total, customText) {
-        statSent.textContent = sentCount;
-        statFailed.textContent = failedCount;
+        if (statSent) statSent.textContent = sentCount;
+        if (statFailed) statFailed.textContent = failedCount;
 
         const remaining = Math.max(0, total - (sentCount + failedCount));
-        statRemaining.textContent = remaining;
+        if (statRemaining) statRemaining.textContent = remaining;
 
         const percentage = Math.min(100, Math.round(((sentCount + failedCount) / total) * 100));
-        progressBar.style.width = `${percentage}%`;
+        if (progressBar) progressBar.style.width = `${percentage}%`;
 
         if (customText && statusText && isSending && !stopRequested) {
             statusText.textContent = customText;
@@ -294,9 +305,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function finishSendingUI() {
-        sendBtn.disabled = false;
-        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send All';
-        stopBtn.classList.add('hidden');
+        if (sendBtn) {
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send All';
+        }
+        if (stopBtn) stopBtn.classList.add('hidden');
 
         if (window.turnstile) {
             try { window.turnstile.reset(); } catch (e) { }
